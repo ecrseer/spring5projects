@@ -22,6 +22,7 @@ public class City {
     private Long id;
     private String name;
     private Country country;
+    private String countryCode;
     private String district;
     private Long population;
 }

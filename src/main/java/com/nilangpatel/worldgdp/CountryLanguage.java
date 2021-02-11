@@ -19,6 +19,7 @@ import lombok.Setter;
 @Getter
 public class CountryLanguage {
     private Country country;
+    private String countryCode;
     private String language;
     private String isOfficial;
     private Double percentage;
