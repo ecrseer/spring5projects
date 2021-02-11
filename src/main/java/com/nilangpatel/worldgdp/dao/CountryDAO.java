@@ -6,8 +6,32 @@ import java.util.List;
 import java.util.Map;
 
 public class CountryDAO {
-    private String SELECT_FROM;
+    private static final String SELECT_CLAUSE="SELECT "
+            + " c.Code, "
+            + " c.Name, "
+            + " c.Continent, "
+            + " c.region, "
+            + " c.SurfaceArea surface_area, "
+            + " c.IndepYear indep_year, "
+            + " c.Population, "
+            + " c.LifeExpectancy life_expectancy, "
+            + " c.GNP, "
+            + " c.LocalName local_name, "
+            + " c.GovernmentForm government_form, "
+            + " c.HeadOfState head_of_state, "
+            + " c.code2 ,"
+            + " c.capital ,"
+            + " cy.name capital_name "
+            + "FROM country c"
+            + "LEFT OUTER JOIN city cy ON cy.id=c.capital";
+
+    private static final String SELECT_WHERE="AND (LOWER(c.name))" +
+            "LIKE CONCAT('%', LOWER(:search),'%')";
+
     private int PAGE_SIZE=0;
+
+
+
 
     public List<Country> getCountries(Map<String,Object> parametros){
         int nPaginas=0;
