@@ -27,7 +27,9 @@ public class CountryDAO {
 
     private static final String SELECT_WHERE="AND (LOWER(c.name))" +
             "LIKE CONCAT('%', LOWER(:search),'%')";
-
+    private static final String REGION_WHERE ="AND c.region = :region";
+    private static final String PAGINATION = "ORDER BY c.code" +
+            "LIMIT :size OFFSET :offset";
     private int PAGE_SIZE=0;
 
 
