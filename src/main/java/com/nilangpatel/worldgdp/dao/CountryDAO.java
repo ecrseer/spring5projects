@@ -47,6 +47,10 @@ public class CountryDAO {
                 "continent"))?false:true;
         boolean _pescaNome = StringUtils.isEmpty((String)parametros
                 .get("search"))?false:true;
+        String _queryComOpcoes = SELECT_CLAUSE+
+                "WHERE 1 = 1"+(_pescaNome? SELECT_WHERE:"")
+                +(_pescaContinente? CONTINENT_WHERE:"")
+                +(_pescaRegiao? REGION_WHERE:"");
 
         if(parametros.containsKey("PageNo"))
             nPaginas = Integer.parseInt(parametros.get("PageNo")
@@ -57,7 +61,7 @@ public class CountryDAO {
         parametros.put("size",PAGE_SIZE);
 
 
-        //namedParameterJdbcTemplate.query(SELECT_CLAUSE);
+        namedParameterJdbcTemplate.query();
         return null;
     }
 }
