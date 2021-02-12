@@ -45,6 +45,9 @@ public class CountryDAO {
                 .isEmpty((String)parametros.get("region"))? false:true;
         boolean _pescaContinente = StringUtils.isEmpty((String)parametros.get(
                 "continent"))?false:true;
+        boolean _pescaNome = StringUtils.isEmpty((String)parametros
+                .get("search"))?false:true;
+
         if(parametros.containsKey("PageNo"))
             nPaginas = Integer.parseInt(parametros.get("PageNo")
                     .toString());
