@@ -1,11 +1,14 @@
 package com.nilangpatel.worldgdp.dao;
 
 import com.nilangpatel.worldgdp.Country;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
 
 public class CountryDAO {
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private static final String SELECT_CLAUSE="SELECT "
             + " c.Code, "
             + " c.Name, "
@@ -28,6 +31,7 @@ public class CountryDAO {
     private static final String SELECT_WHERE="AND (LOWER(c.name))" +
             "LIKE CONCAT('%', LOWER(:search),'%')";
     private static final String REGION_WHERE ="AND c.region = :region";
+    private static final String CONTINENT_WHERE ="AND c.continent = :continent";
     private static final String PAGINATION = "ORDER BY c.code" +
             "LIMIT :size OFFSET :offset";
     private int PAGE_SIZE=0;
@@ -37,6 +41,10 @@ public class CountryDAO {
 
     public List<Country> getCountries(Map<String,Object> parametros){
         int nPaginas=0;
+        boolean _pescaRegiao = StringUtils
+                .isEmpty((String)parametros.get("region"))? false:true;
+        boolean _pescaContinente = StringUtils.isEmpty((String)parametros.get(
+                "continent"))?false:true;
         if(parametros.containsKey("PageNo"))
             nPaginas = Integer.parseInt(parametros.get("PageNo")
                     .toString());
@@ -46,7 +54,7 @@ public class CountryDAO {
         parametros.put("size",PAGE_SIZE);
 
 
-
+        //namedParameterJdbcTemplate.query(SELECT_CLAUSE);
         return null;
     }
 }
