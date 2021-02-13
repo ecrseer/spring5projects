@@ -38,12 +38,8 @@ public class CountryDAOTest {
             countryDao.setNamedParameterJdbcTemplate((namedParamJdbcTemplate));
         }
 
-        @Test
-        public void amizade(){
-            countryDao = new CountryDAO();
-            boolean en = countryDao.amizou(true);
-            assertThat(en).isEqualTo(false);
-        }
+
+
 
 
     @Test public void testEditCountryDetail() {
