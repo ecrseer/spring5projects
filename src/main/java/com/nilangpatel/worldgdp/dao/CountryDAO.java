@@ -41,22 +41,7 @@ public class CountryDAO {
         return StringUtils.isEmpty((String)parametro.get(atributo));
     }
 
-    private String _verificaParamPesquisa(String paramPesquisado,
-            Map<String,Object> parametro){
 
-        switch ((String)parametro.get(paramPesquisado)){
-            case "search":
-                return SELECT_WHERE;
-            case "region":
-                return REGION_WHERE;
-            case "continent":
-                return CONTINENT_WHERE;
-            default:
-                return "";
-
-        }
-
-    }
     private String _queryCompletada(String initialQuery,
                                     Map <String,Object> parametros){
         String _queryCompleta=initialQuery+"";
@@ -75,10 +60,6 @@ public class CountryDAO {
     public List<Country> getCountries(Map<String,Object> parametros){
         int nPaginas=0;
 
-        String _queryComOpcoes = SELECT_CLAUSE+
-                "WHERE 1 = 1"+_verificaParamPesquisa("search",parametros)
-                +_verificaParamPesquisa("continent",parametros)
-                +_verificaParamPesquisa("region",parametros);
 
         if(parametros.containsKey("PageNo"))
             nPaginas = Integer.parseInt(parametros.get("PageNo")
