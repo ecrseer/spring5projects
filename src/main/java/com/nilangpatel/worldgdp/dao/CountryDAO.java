@@ -29,14 +29,17 @@ public class CountryDAO {
             + "FROM country c"
             + "LEFT OUTER JOIN city cy ON cy.id=c.capital";
 
-    private static final String SELECT_WHERE="AND (LOWER(c.name))" +
+    private static final String SELECT_WHERE=" AND (LOWER(c.name))" +
             "LIKE CONCAT('%', LOWER(:search),'%')";
-    private static final String REGION_WHERE ="AND c.region = :region";
-    private static final String CONTINENT_WHERE ="AND c.continent = :continent";
+    private static final String REGION_WHERE =" AND c.region = :region";
+    private static final String CONTINENT_WHERE =" AND c.continent = :continent";
     private static final String PAGINATION = "ORDER BY c.code" +
             "LIMIT :size OFFSET :offset";
     private int PAGE_SIZE=0;
 
+    private boolean _parametroTem(String atributo,Map<String,Object> parametro){
+        return StringUtils.isEmpty((String)parametro.get(atributo));
+    }
 
     private String _verificaParamPesquisa(String paramPesquisado,
             Map<String,Object> parametro){
@@ -53,11 +56,21 @@ public class CountryDAO {
 
         }
 
-
-
-
     }
-
+    private String _queryCompletada(String initialQuery,
+                                    Map <String,Object> parametros){
+        String _queryCompleta=initialQuery+"";
+        if(_parametroTem("search",parametros)){
+            _queryCompleta+=SELECT_WHERE;
+        }
+        if(_parametroTem("region",parametros)){
+            _queryCompleta+=REGION_WHERE;
+        }
+        if(_parametroTem("continent",parametros)){
+            _queryCompleta+=CONTINENT_WHERE;
+        }
+        return _queryCompleta;
+    }
 
     public List<Country> getCountries(Map<String,Object> parametros){
         int nPaginas=0;
@@ -77,7 +90,8 @@ public class CountryDAO {
 
         return
         namedParameterJdbcTemplate.query(
-             _queryComOpcoes+""+PAGINATION,parametros,
+             _queryCompletada(SELECT_CLAUSE+"WHERE 1 = 1 ",
+                     parametros)+""+PAGINATION,parametros,
                 new CountryRowMapper());
 
     }
