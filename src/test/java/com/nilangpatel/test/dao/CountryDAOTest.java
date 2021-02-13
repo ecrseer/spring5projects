@@ -39,6 +39,12 @@ public class CountryDAOTest {
         }
 
         @Test
+        public void getCountries(){
+            List<Country> contries = countryDao.getCountries(new HashMap<>());
+            assertThat(contries).hasSize(20);
+        }
+
+        @Test
         public void getCountries_ByName(){
             Map<String,Object> parametros = new HashMap<>();
             parametros.put("search","Aruba");
