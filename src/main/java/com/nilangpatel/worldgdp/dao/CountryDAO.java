@@ -1,6 +1,7 @@
 package com.nilangpatel.worldgdp.dao;
 
 import com.nilangpatel.worldgdp.Country;
+import com.nilangpatel.worldgdp.dao.mapper.CountryRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.StringUtils;
 
@@ -37,20 +38,34 @@ public class CountryDAO {
     private int PAGE_SIZE=0;
 
 
+    private String _verificaParamPesquisa(String paramPesquisado,
+            Map<String,Object> parametro){
+
+        switch ((String)parametro.get(paramPesquisado)){
+            case "search":
+                return SELECT_WHERE;
+            case "region":
+                return REGION_WHERE;
+            case "continent":
+                return CONTINENT_WHERE;
+            default:
+                return "";
+
+        }
+
+
+
+
+    }
 
 
     public List<Country> getCountries(Map<String,Object> parametros){
         int nPaginas=0;
-        boolean _pescaRegiao = StringUtils
-                .isEmpty((String)parametros.get("region"))? false:true;
-        boolean _pescaContinente = StringUtils.isEmpty((String)parametros.get(
-                "continent"))?false:true;
-        boolean _pescaNome = StringUtils.isEmpty((String)parametros
-                .get("search"))?false:true;
+
         String _queryComOpcoes = SELECT_CLAUSE+
-                "WHERE 1 = 1"+(_pescaNome? SELECT_WHERE:"")
-                +(_pescaContinente? CONTINENT_WHERE:"")
-                +(_pescaRegiao? REGION_WHERE:"");
+                "WHERE 1 = 1"+_verificaParamPesquisa("search",parametros)
+                +_verificaParamPesquisa("continent",parametros)
+                +_verificaParamPesquisa("region",parametros);
 
         if(parametros.containsKey("PageNo"))
             nPaginas = Integer.parseInt(parametros.get("PageNo")
@@ -60,8 +75,10 @@ public class CountryDAO {
         parametros.put("offset",offset);
         parametros.put("size",PAGE_SIZE);
 
+        return
+        namedParameterJdbcTemplate.query(
+             _queryComOpcoes+""+PAGINATION,parametros,
+                new CountryRowMapper());
 
-        namedParameterJdbcTemplate.query();
-        return null;
     }
 }
