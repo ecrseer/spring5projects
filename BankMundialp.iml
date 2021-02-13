@@ -33,5 +33,6 @@
     <orderEntry type="library" name="Maven: com.h2database:h2:1.4.198" level="project" />
     <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:2.7.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains:annotations:20.1.0" level="project" />
   </component>
 </module>

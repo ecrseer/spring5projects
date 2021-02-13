@@ -2,13 +2,16 @@ package com.nilangpatel.worldgdp.dao;
 
 import com.nilangpatel.worldgdp.Country;
 import com.nilangpatel.worldgdp.dao.mapper.CountryRowMapper;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Setter
 public class CountryDAO {
     @Autowired
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -29,7 +32,7 @@ public class CountryDAO {
             + " c.capital ,"
             + " cy.name capital_name "
             + "FROM country c"
-            + "LEFT OUTER JOIN city cy ON cy.id=c.capital";
+            + " LEFT OUTER JOIN city cy ON cy.id=c.capital";
 
     private static final String SELECT_WHERE=" AND (LOWER(c.name))" +
             "LIKE CONCAT('%', LOWER(:search),'%')";
@@ -40,7 +43,7 @@ public class CountryDAO {
     private int PAGE_SIZE=0;
 
     private boolean _parametroTem(String atributo,Map<String,Object> parametro){
-        return StringUtils.isEmpty((String)parametro.get(atributo));
+        return !StringUtils.isEmpty((String)parametro.get(atributo));
     }
 
 
@@ -58,7 +61,22 @@ public class CountryDAO {
         }
         return _queryCompleta;
     }
-
+    private Map<String, Object> getCountryAsMap(String code, Country country){
+        Map<String, Object> countryMap = new HashMap<String, Object>();
+        countryMap.put("name", country.getName());
+        countryMap.put("localName", country.getLocalName());
+        countryMap.put("capital", country.getCapital().getId());
+        countryMap.put("continent", country.getContinent());
+        countryMap.put("region", country.getRegion());
+        countryMap.put("headOfState", country.getHeadOfState());
+        countryMap.put("governmentForm", country.getGovernmentForm());
+        countryMap.put("indepYear", country.getIndepYear());
+        countryMap.put("surfaceArea", country.getSurfaceArea());
+        countryMap.put("population", country.getPopulation());
+        countryMap.put("lifeExpectancy", country.getLifeExpectancy());
+        countryMap.put("code", code);
+        return countryMap;
+    }
     public List<Country> getCountries(Map<String,Object> parametros){
         int nPaginas=0;
 
@@ -85,6 +103,34 @@ public class CountryDAO {
                         "country c WHERE 1 = 1 ",parametros)
                 ,parametros,Integer.class);
 
+    }
+    public Country getCountryDetail(String code) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("code", code);
+
+        return namedParameterJdbcTemplate.queryForObject(SELECT_CLAUSE
+                        +" WHERE c.code = :code", params,
+                new CountryRowMapper());
+    }
+    public void editCountryDetail(String code, Country country) {
+        namedParameterJdbcTemplate.update(" UPDATE country SET "
+                        + " name = :name, "
+                        + " localname = :localName, "
+                        + " capital = :capital, "
+                        + " continent = :continent, "
+                        + " region = :region, "
+                        + " HeadOfState = :headOfState, "
+                        + " GovernmentForm = :governmentForm, "
+                        + " IndepYear = :indepYear, "
+                        + " SurfaceArea = :surfaceArea, "
+                        + " population = :population, "
+                        + " LifeExpectancy = :lifeExpectancy "
+                        + "WHERE Code = :code ",
+                getCountryAsMap(code, country));
+    }
+
+    public boolean amizou(boolean entrada){
+        return !entrada;
     }
 
 }

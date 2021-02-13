@@ -35,6 +35,6 @@ public class CountryRowMapper implements RowMapper<Country> {
             country.setCapital(city);
         }
 
-        return null;
+        return country;
     }
 }
