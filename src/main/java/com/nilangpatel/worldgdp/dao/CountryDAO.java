@@ -2,6 +2,7 @@ package com.nilangpatel.worldgdp.dao;
 
 import com.nilangpatel.worldgdp.Country;
 import com.nilangpatel.worldgdp.dao.mapper.CountryRowMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.StringUtils;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CountryDAO {
+    @Autowired
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private static final String SELECT_CLAUSE="SELECT "
             + " c.Code, "
@@ -76,4 +78,13 @@ public class CountryDAO {
                 new CountryRowMapper());
 
     }
+    public int getCountriesNumber(Map<String,Object> parametros
+                                  ){
+        return namedParameterJdbcTemplate.queryForObject(
+                _queryCompletada("SELECT COUNT(*) FROM " +
+                        "country c WHERE 1 = 1 ",parametros)
+                ,parametros,Integer.class);
+
+    }
+
 }
