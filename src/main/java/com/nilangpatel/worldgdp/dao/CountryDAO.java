@@ -38,9 +38,9 @@ public class CountryDAO {
             "LIKE CONCAT('%', LOWER(:search),'%')";
     private static final String REGION_WHERE =" AND c.region = :region";
     private static final String CONTINENT_WHERE =" AND c.continent = :continent";
-    private static final String PAGINATION = "ORDER BY c.code" +
-            "LIMIT :size OFFSET :offset";
-    private int PAGE_SIZE=0;
+    private static final String PAGINATION = " ORDER BY c.code" +
+            " LIMIT :size OFFSET :offset";
+    private int PAGE_SIZE=20;
 
     private boolean _parametroTem(String atributo,Map<String,Object> parametro){
         return !StringUtils.isEmpty((String)parametro.get(atributo));
@@ -61,6 +61,10 @@ public class CountryDAO {
         }
         return _queryCompleta;
     }
+    public String _queryCompletadaPb(Map<String,Object> pm){
+        return _queryCompletada(SELECT_CLAUSE+" WHERE 1 = 1 ",
+                pm)+" "+PAGINATION;
+    }
     private Map<String, Object> getCountryAsMap(String code, Country country){
         Map<String, Object> countryMap = new HashMap<String, Object>();
         countryMap.put("name", country.getName());
@@ -78,7 +82,7 @@ public class CountryDAO {
         return countryMap;
     }
     public List<Country> getCountries(Map<String,Object> parametros){
-        int nPaginas=0;
+        int nPaginas=1;
 
 
         if(parametros.containsKey("PageNo"))
@@ -89,10 +93,11 @@ public class CountryDAO {
         parametros.put("offset",offset);
         parametros.put("size",PAGE_SIZE);
 
+        String nossaQr= _queryCompletada(SELECT_CLAUSE+" WHERE 1 = 1 ",
+                parametros)+""+PAGINATION;
+
         return
-        namedParameterJdbcTemplate.query(
-             _queryCompletada(SELECT_CLAUSE+"WHERE 1 = 1 ",
-                     parametros)+""+PAGINATION,parametros,
+        namedParameterJdbcTemplate.query(nossaQr,parametros,
                 new CountryRowMapper());
 
     }
@@ -107,9 +112,9 @@ public class CountryDAO {
     public Country getCountryDetail(String code) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("code", code);
-
-        return namedParameterJdbcTemplate.queryForObject(SELECT_CLAUSE
-                        +" WHERE c.code = :code", params,
+        String sFiny = SELECT_CLAUSE
+                +" WHERE c.code = :code";
+        return namedParameterJdbcTemplate.queryForObject(sFiny, params,
                 new CountryRowMapper());
     }
     public void editCountryDetail(String code, Country country) {
@@ -129,8 +134,5 @@ public class CountryDAO {
                 getCountryAsMap(code, country));
     }
 
-    public boolean amizou(boolean entrada){
-        return !entrada;
-    }
 
 }
